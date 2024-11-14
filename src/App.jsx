@@ -1,5 +1,5 @@
 import { useState, createContext, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 // components
 import NavBar from './components/NavBar/NavBar';
@@ -10,6 +10,7 @@ import SigninForm from './components/SigninForm/SigninForm';
 
 import HootList from './components/HootList/HootList';
 import HootDetails from './components/HootDetails/HootDetails';
+import HootForm from './components/HootForm/HootForm';
 
 // services
 import * as authService from '../src/services/authService'; 
@@ -20,6 +21,8 @@ export const AuthedUserContext = createContext(null);
 const App = () => {
   const [user, setUser] = useState(authService.getUser()); // using the method from authservice
   const [hoots, setHoots] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAllHoots = async () => {
@@ -36,6 +39,14 @@ const App = () => {
     setUser(null);
   };
 
+  const handleAddHoot = async (hootFormData) => {
+    // console.log("Hoot Form Data: ",newHoot);
+    const newHoot = await hootService.create(hootFormData);
+    setHoots([newHoot, ...hoots]);
+
+    navigate('/hoots');
+  }
+
   return (
     <>
       <AuthedUserContext.Provider value={user}>
@@ -47,6 +58,10 @@ const App = () => {
               <Route path="/" element={<Dashboard user={user} />} />
               <Route path="/hoots" element={<HootList hoots={hoots} />} />
               <Route path="/hoots/:hootId" element={<HootDetails />} />
+              <Route
+                  path="/hoots/new"
+                  element={<HootForm handleAddHoot={handleAddHoot} />}
+                />
             </>
           ) : (
             <Route path="/" element={<Landing />} />
