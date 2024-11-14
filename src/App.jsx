@@ -47,6 +47,22 @@ const App = () => {
     navigate('/hoots');
   }
 
+  const handleDeleteHoot = async (hootId) => {
+    // console.log("Hoot ID: ", hootId);
+    const deletedHoot = await hootService.deleteHoot(hootId);
+
+    setHoots(hoots.filter((hoot) => hoot._id !== deletedHoot._id));
+    navigate('/hoots');
+  }
+
+  const handleUpdateHoot = async (hootId, hootFormData) => {
+    // console.log("Hoot ID: ", hootId, "Hoot Form Data: ", hootFormData);
+    const updatedHoot = await hootService.update(hootId, hootFormData);
+    setHoots(hoots.map((hoot) => (hootId === hoot._id ? updatedHoot : hoot)))
+    navigate(`/hoots/${hootId}`);
+  }
+
+
   return (
     <>
       <AuthedUserContext.Provider value={user}>
@@ -57,11 +73,13 @@ const App = () => {
             <>
               <Route path="/" element={<Dashboard user={user} />} />
               <Route path="/hoots" element={<HootList hoots={hoots} />} />
-              <Route path="/hoots/:hootId" element={<HootDetails />} />
+              <Route path="/hoots/:hootId" element={<HootDetails handleDeleteHoot={handleDeleteHoot} />} />
+              
               <Route
                   path="/hoots/new"
-                  element={<HootForm handleAddHoot={handleAddHoot} />}
-                />
+                  element={<HootForm handleAddHoot={handleAddHoot}  />}
+              />
+              <Route path="/hoots/:hootId/edit" element={<HootForm handleUpdateHoot={handleUpdateHoot} />} />
             </>
           ) : (
             <Route path="/" element={<Landing />} />
