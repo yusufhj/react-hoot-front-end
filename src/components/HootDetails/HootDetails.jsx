@@ -70,7 +70,8 @@ const HootDetails = ({ handleDeleteHoot }) => {
                             <p>
                                 {comment.author.username} posted on {new Date(comment.createdAt).toLocaleDateString()}
                             </p>
-                            {comment.author === user._id && (
+                            { (comment.author._id === user._id || comment.author === user._id)
+                            && (
                                 <>
                                     <Link to={`/hoots/${hootId}/comments/${comment._id}/edit`}>Edit</Link>
                                     <button onClick={() => handleDeleteComment(comment._id)}>Delete</button>

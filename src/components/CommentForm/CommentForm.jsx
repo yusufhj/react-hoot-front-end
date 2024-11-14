@@ -31,7 +31,6 @@ const CommentForm = ({ handleAddComment}) => {
           navigate(`/hoots/${hootId}`);
         } else {
           handleAddComment(formData);
-          navigate(`/hoots/${hootId}`);
         }
         setFormData({ text: '' });
       };
